@@ -48,10 +48,15 @@ BUBBLE-SORT-FUNCTIONAL
 ```lisp
 [3]> (defun run-bubble-sort-functional-tests ()
   (format t "Test 1: bubble-sort-functional ~%")
-  (format t "~a~%" (equal (bubble-sort-functional '(4 2 5 1 3)) '(1 2 3 4 5)))
+  (format t "~a~%" (equal (bubble-sort-functional '(3 2 1 0))
+                 '(0 1 2 3)))
   (format t "Test 2: bubble-sort-functional ~%")
-  (format t "~a~%" (equal (bubble-sort-functional '(1 2 3 4 5)) '(1 2 3 4 5)))
-  (format t "Test 3: bubble-sort-functional (empty list) ~%")
+  (format t "~a~%" (equal (bubble-sort-functional '(0 1 2 3) :test #'>)
+                 '(3 2 1 0)))
+ (format t "Test 3: bubble-sort-functional ~%")
+  (format t "~a~%" (equal (bubble-sort-functional '(0 1 2 3) :test #'<)
+                 '(0 1 2 3)))
+  (format t "Test 4: bubble-sort-functional (empty list) ~%")
   (format t "~a~%" (equal (bubble-sort-functional '()) '())))
 RUN-BUBBLE-SORT-FUNCTIONAL-TESTS
 ```
@@ -64,7 +69,9 @@ Test 1: bubble-sort-functional
 T
 Test 2: bubble-sort-functional
 T
-Test 3: bubble-sort-functional (empty list)
+Test 3: bubble-sort-functional
+T
+Test 4: bubble-sort-functional (empty list)
 T
 NIL
 ```
@@ -88,20 +95,23 @@ ADD-PREV-REDUCER
 ```lisp
 [6]> (defun run-add-prev-reducer-tests ()
   (format t "Test 1: add-prev-reducer ~%")
-  (format t "~a~%" (equal ((reduce (add-prev-reducer :transform #'1+)
-        '(1 2 3)
-        :from-end nil
-        :initial-value nil)) '((2) (3 . 2) (4 . 3))))
+  (format t "~a~%" (equal (reduce (add-prev-reducer)
+                         '(1 2 3 4)
+                         :from-end nil
+                         :initial-value nil)
+                 '((1) (2 . 1) (3 . 2) (4 . 3))))
   (format t "Test 2: add-prev-reducer ~%")
-  (format t "~a~%" (equal ((reduce (add-prev-reducer)
-        '(1 2 3)
-        :from-end nil
-        :initial-value nil)) '((1) (2 . 1) (3 . 2))))
+  (format t "~a~%" (equal (reduce (add-prev-reducer :transform (lambda (x) (+ x 1)))
+                         '(1 2 3 4)
+                         :initial-value nil
+                         :from-end nil)
+                 '((2 . NIL) (3 . 2) (4 . 3) (5 . 4))))
   (format t "Test 3: add-prev-reducer (empty list) ~%")
-   (format t "~a~%" (equal ((reduce (add-prev-reducer)
-        '()
-        :from-end nil
-        :initial-value nil)) '()))
+   (format t "~a~%" (equal (reduce (add-prev-reducer)
+                         '()
+                         :initial-value nil
+                         :from-end nil)
+                 '())))
 RUN-ADD-PREV-REDUCER-TESTS
 ```
 
@@ -109,11 +119,11 @@ RUN-ADD-PREV-REDUCER-TESTS
 
 ```lisp
 [7]> (run-add-prev-reducer-tests)
-Test 1: bubble-sort-imperative
+Test 1: add-prev-reducer
 T
-Test 2: bubble-sort-imperative
+Test 2: add-prev-reducer
 T
-Test 3: bubble-sort-imperative (empty list)
+Test 3: add-prev-reducer (empty list)
 T
 NIL
 ```
