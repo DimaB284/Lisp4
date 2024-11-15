@@ -99,7 +99,7 @@ ADD-PREV-REDUCER
                          '(1 2 3 4)
                          :from-end nil
                          :initial-value nil)
-                 '((1) (2 . 1) (3 . 2) (4 . 3))))
+                 '((1 . NIL) (2 . 1) (3 . 2) (4 . 3))))
   (format t "Test 2: add-prev-reducer ~%")
   (format t "~a~%" (equal (reduce (add-prev-reducer :transform (lambda (x) (+ x 1)))
                          '(1 2 3 4)
