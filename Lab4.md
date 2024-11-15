@@ -26,20 +26,21 @@
 ## Функціональний варіант
 ```lisp
 ;1-st task
-[1]> (defun swap-adjacent (list)
+[1]> (defun swap-adjacent (list &key (key #'identity) (test #'<))
   (cond
-    ((null list) nil)
     ((null (cdr list)) list)
-    ((> (car list) (cadr list))       
-      (cons (cadr list) (cons (car list) (swap-adjacent (cddr list)))))
+    ((funcall test (funcall key (car list)) (funcall key (cadr list)))
+     (cons (car list) (swap-adjacent (cdr list) :key key :test test)))
     (t
-     (cons (car list) (swap-adjacent (cdr list))))))
+     (cons (cadr list) (swap-adjacent (cons (car list) (cddr list))
+                                      :key key :test test)))))
 SWAP-ADJACENT
 
-[2]> (defun bubble-sort-functional (list)
-  (let ((swapped-list (swap-adjacent list)))
-    (if (equal swapped-list list)         
-      (bubble-sort-functional swapped-list))))
+[2]> (defun bubble-sort-functional (list &key (key #'identity) (test #'<))
+    (let ((swapped-list (swap-adjacent list :key key :test test)))
+    (if (equal swapped-list list)
+        list
+      (bubble-sort-functional swapped-list :key key :test test))))
 BUBBLE-SORT-FUNCTIONAL
 ```
 
@@ -52,18 +53,18 @@ BUBBLE-SORT-FUNCTIONAL
   (format t "~a~%" (equal (bubble-sort-functional '(1 2 3 4 5)) '(1 2 3 4 5)))
   (format t "Test 3: bubble-sort-functional (empty list) ~%")
   (format t "~a~%" (equal (bubble-sort-functional '()) '())))
-RUN-REMOVE-SECONDS-AND-THIRDS-TESTS
+RUN-BUBBLE-SORT-FUNCTIONAL-TESTS
 ```
 
 ## Тестування функціонального варіанту
 
 ```lisp
 [4]> (run-bubble-sort-functional-tests)
-Test 1: remove-seconds-and-thirds
+Test 1: bubble-sort-functional
 T
-Test 2: remove-seconds-and-thirds
+Test 2: bubble-sort-functional
 T
-Test 3: remove-seconds-and-thirds (empty list)
+Test 3: bubble-sort-functional (empty list)
 T
 NIL
 ```
@@ -85,20 +86,29 @@ ADD-PREV-REDUCER
 
 ## Тестові набори
 ```lisp
-[6]> (defun run-bubble-sort-imperative-tests ()
-  (format t "Test 1: bubble-sort-imperative ~%")
-  (format t "~a~%" (equal (bubble-sort-imperative '(4 2 5 1 3)) '(1 2 3 4 5)))
-  (format t "Test 2: bubble-sort-imperative ~%")
-  (format t "~a~%" (equal (bubble-sort-imperative '(1 2 3 4 5)) '(1 2 3 4 5)))
-  (format t "Test 3: bubble-sort-imperative (empty list) ~%")
-  (format t "~a~%" (equal (bubble-sort-imperative '()) '())))
-RUN-LIST-SET-INTERSECTION-TESTS
+[6]> (defun run-add-prev-reducer-tests ()
+  (format t "Test 1: add-prev-reducer ~%")
+  (format t "~a~%" (equal ((reduce (add-prev-reducer :transform #'1+)
+        '(1 2 3)
+        :from-end nil
+        :initial-value nil)) '((2) (3 . 2) (4 . 3))))
+  (format t "Test 2: add-prev-reducer ~%")
+  (format t "~a~%" (equal ((reduce (add-prev-reducer)
+        '(1 2 3)
+        :from-end nil
+        :initial-value nil)) '((1) (2 . 1) (3 . 2))))
+  (format t "Test 3: add-prev-reducer (empty list) ~%")
+   (format t "~a~%" (equal ((reduce (add-prev-reducer)
+        '()
+        :from-end nil
+        :initial-value nil)) '()))
+RUN-ADD-PREV-REDUCER-TESTS
 ```
 
 ## Тестування імперативного варіанту
 
 ```lisp
-[7]> (run-bubble-sort-imperative-tests)
+[7]> (run-add-prev-reducer-tests)
 Test 1: bubble-sort-imperative
 T
 Test 2: bubble-sort-imperative
