@@ -51,14 +51,12 @@ CL-USER> (reduce (add-prev-reducer :transform #'1+)
     (t
      (cons (cadr list) (swap-adjacent (cons (car list) (cddr list))
                                       :key key :test test)))))
-SWAP-ADJACENT
 
 [2]> (defun bubble-sort-functional (list &key (key #'identity) (test #'<))
     (let ((swapped-list (swap-adjacent list :key key :test test)))
     (if (equal swapped-list list)
         list
       (bubble-sort-functional swapped-list :key key :test test))))
-BUBBLE-SORT-FUNCTIONAL
 ```
 
 ## Тестові набори
@@ -75,7 +73,6 @@ BUBBLE-SORT-FUNCTIONAL
                  '(0 1 2 3)))
   (format t "Test 4: bubble-sort-functional (empty list) ~%")
   (format t "~a~%" (equal (bubble-sort-functional '()) '())))
-RUN-BUBBLE-SORT-FUNCTIONAL-TESTS
 ```
 
 ## Тестування першої частини завдання
@@ -105,7 +102,6 @@ NIL
              (pair (cons current-val prev-val)))  
         (setf prev current)  
         (nconc acc (list pair))))))
-ADD-PREV-REDUCER
 ```
 
 ## Тестові набори
@@ -129,7 +125,6 @@ ADD-PREV-REDUCER
                          :initial-value nil
                          :from-end nil)
                  '())))
-RUN-ADD-PREV-REDUCER-TESTS
 ```
 
 ## Тестування другої частини завдання
