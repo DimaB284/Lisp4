@@ -37,14 +37,16 @@
 ;2 task
 
 (defun add-prev-reducer (&key transform)
-  (let* ((transform-fn (or transform #'identity))  
+  (let* ((transform-fn (or transform #'identity)) 
          (prev nil))  
     (lambda (acc current)
-      (let* ((current-val (funcall transform-fn current))
-             (prev-val (and prev (funcall transform-fn prev))) 
-             (pair (cons current-val prev-val)))  
-        (setf prev current)  
-        (nconc acc (list pair))))))
+      (if (and current (not (eq current t))) 
+          (let* ((current-val (funcall transform-fn current))
+                 (prev-val (and prev (funcall transform-fn prev)))  
+                 (pair (cons current-val prev-val)))  
+            (setf prev current)
+            (nconc acc (list pair)))
+        acc))))
 
 
 
