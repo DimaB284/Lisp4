@@ -40,7 +40,7 @@
   (let* ((transform-fn (or transform #'identity)) 
          (prev nil))  
     (lambda (acc current)
-      (if (and current (not (eq current t))) 
+      (if (and (not (null current)) (not (eq current t))) 
           (let* ((current-val (funcall transform-fn current))
                  (prev-val (and prev (funcall transform-fn prev)))  
                  (pair (cons current-val prev-val)))  
